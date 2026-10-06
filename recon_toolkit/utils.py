@@ -103,9 +103,7 @@ def print_error(msg: str) -> None:
 # - Labels consist of alphanumeric characters and hyphens, but cannot start/end with a hyphen.
 # - Total domain length cannot exceed 253 characters.
 # - Must contain at least one dot separating the second-level domain and TLD.
-DOMAIN_REGEX = re.compile(
-    r"^(?=.{1,253}$)(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})+$"
-)
+DOMAIN_REGEX = re.compile(r"^(?=.{1,253}$)(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})+$")
 
 
 def normalize_domain(raw_input: str) -> str:
@@ -178,6 +176,7 @@ def export_to_json(data: Dict[str, Any], filepath: str) -> None:
         data: Reconnaissance results dictionary.
         filepath: Destination file path.
     """
+
     def json_default_serializer(obj: Any) -> Any:
         if isinstance(obj, (datetime,)):
             return obj.isoformat()

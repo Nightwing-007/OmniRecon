@@ -24,3 +24,6 @@ scan_report.json
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Temporary / Lock Files
+~$*

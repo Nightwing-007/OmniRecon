@@ -111,14 +111,22 @@ class SubdomainResult:
             return
 
         # Print header
-        print(f"\n  {Colors.BOLD}{'SUBDOMAIN':<45} {'RESOLVED IP(S)':<30} {'SOURCE(S)'}{Colors.RESET}")
+        print(
+            f"\n  {Colors.BOLD}{'SUBDOMAIN':<45} {'RESOLVED IP(S)':<30} {'SOURCE(S)'}{Colors.RESET}"
+        )
         print(f"  {'-' * 45} {'-' * 30} {'-' * 15}")
 
         for sub in sorted(self.discovered_subdomains, key=lambda s: s.subdomain):
             sub_name = sub.subdomain
-            ips_str = ", ".join(sub.ip_addresses) if sub.ip_addresses else f"{Colors.DIM}Unresolved{Colors.RESET}"
+            ips_str = (
+                ", ".join(sub.ip_addresses)
+                if sub.ip_addresses
+                else f"{Colors.DIM}Unresolved{Colors.RESET}"
+            )
             sources_str = ", ".join(sub.sources)
-            print(f"  {Colors.CYAN}{sub_name:<45}{Colors.RESET} {ips_str:<30} {Colors.DIM}{sources_str}{Colors.RESET}")
+            print(
+                f"  {Colors.CYAN}{sub_name:<45}{Colors.RESET} {ips_str:<30} {Colors.DIM}{sources_str}{Colors.RESET}"
+            )
 
 
 # ============================================================================
@@ -247,9 +255,7 @@ def passive_enumeration_crtsh(domain: str, timeout: int = 15) -> Tuple[Set[str],
     """
     found_subdomains: Set[str] = set()
     url = f"https://crt.sh/?q=%.{domain}&output=json"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) ReconToolkit/1.0"
-    }
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) ReconToolkit/1.0"}
 
     try:
         response = requests.get(url, headers=headers, timeout=timeout)
@@ -276,7 +282,10 @@ def passive_enumeration_crtsh(domain: str, timeout: int = 15) -> Tuple[Set[str],
         return found_subdomains, None
 
     except requests.exceptions.Timeout:
-        return found_subdomains, f"crt.sh API request timed out ({timeout}s). Service may be overloaded."
+        return (
+            found_subdomains,
+            f"crt.sh API request timed out ({timeout}s). Service may be overloaded.",
+        )
     except requests.exceptions.RequestException as err:
         return found_subdomains, f"crt.sh API connection error: {err}"
     except ValueError as err:
@@ -358,8 +367,7 @@ async def active_wordlist_bruteforce_async(
     semaphore = asyncio.Semaphore(concurrency)
 
     tasks = [
-        async_resolve_candidate(host, resolver, semaphore, wildcard_ips)
-        for host in candidates
+        async_resolve_candidate(host, resolver, semaphore, wildcard_ips) for host in candidates
     ]
 
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -462,7 +470,9 @@ async def enumerate_subdomains_async(
                 wildcard_ips=wildcard_ip_set,
                 nameservers=nameservers,
             )
-            print_success(f"Active brute-force identified {len(active_results)} resolving subdomains.")
+            print_success(
+                f"Active brute-force identified {len(active_results)} resolving subdomains."
+            )
 
             for host, ips in active_results:
                 if host not in aggregated:

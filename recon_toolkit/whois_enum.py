@@ -22,6 +22,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import requests
 import whois
+
 try:
     from whois.exceptions import (
         PywhoisError,
@@ -31,6 +32,7 @@ try:
 except ImportError:
     try:
         from whois.parser import PywhoisError
+
         WhoisDomainNotFoundError = PywhoisError
         WhoisQuotaExceededError = PywhoisError
     except ImportError:
@@ -109,7 +111,9 @@ class WhoisResult:
             return
 
         if not self.is_registered:
-            print_warning(f"Domain '{self.domain}' appears to be UNREGISTERED or no WHOIS record was found.")
+            print_warning(
+                f"Domain '{self.domain}' appears to be UNREGISTERED or no WHOIS record was found."
+            )
             return
 
         def _fmt(val: Any) -> str:
@@ -149,7 +153,7 @@ class WhoisResult:
 def _normalize_date_value(val: Any) -> Optional[Union[str, List[str]]]:
     """
     Format datetime objects into ISO 8601 strings.
-    
+
     python-whois frequently returns either a single datetime object, a string,
     or a list of datetime objects (e.g. multiple registries returning dates).
     """
@@ -187,7 +191,7 @@ def _normalize_list_value(val: Any) -> List[str]:
 def _lookup_rdap_fallback(domain: str, timeout: int = 8) -> Optional[WhoisResult]:
     """
     Fallback query using RDAP (Registration Data Access Protocol - RFC 7482/7484) over HTTPS.
-    
+
     Used automatically when legacy WHOIS TCP port 43 is blocked by a local network
     firewall, times out, or fails to respond.
     """
@@ -298,7 +302,9 @@ def lookup_whois(domain: str, timeout: int = 10) -> WhoisResult:
     Returns:
         WhoisResult dataclass instance populated with parsed fields or error details.
     """
-    print_info(f"Initiating WHOIS query for '{Colors.BOLD}{domain}{Colors.RESET}' (timeout={timeout}s)...")
+    print_info(
+        f"Initiating WHOIS query for '{Colors.BOLD}{domain}{Colors.RESET}' (timeout={timeout}s)..."
+    )
 
     # Set default socket timeout so blocked port 43 won't hang the tool indefinitely
     original_timeout = socket.getdefaulttimeout()
@@ -375,7 +381,9 @@ def lookup_whois(domain: str, timeout: int = 10) -> WhoisResult:
         # If WHOIS server quota is exceeded, try RDAP over HTTPS
         rdap_res = _lookup_rdap_fallback(domain, timeout=timeout)
         if rdap_res:
-            print_warning("WHOIS port 43 quota exceeded; recovered registration records via RDAP (HTTPS 443).")
+            print_warning(
+                "WHOIS port 43 quota exceeded; recovered registration records via RDAP (HTTPS 443)."
+            )
             return rdap_res
         return WhoisResult(
             domain=domain,
@@ -394,7 +402,9 @@ def lookup_whois(domain: str, timeout: int = 10) -> WhoisResult:
         # Try RDAP fallback for parsing errors
         rdap_res = _lookup_rdap_fallback(domain, timeout=timeout)
         if rdap_res:
-            print_warning("WHOIS port 43 parser error; recovered registration records via RDAP (HTTPS 443).")
+            print_warning(
+                "WHOIS port 43 parser error; recovered registration records via RDAP (HTTPS 443)."
+            )
             return rdap_res
         return WhoisResult(
             domain=domain,
@@ -406,7 +416,9 @@ def lookup_whois(domain: str, timeout: int = 10) -> WhoisResult:
         # Port 43 timed out (frequent in firewalled networks); attempt RDAP over HTTPS port 443
         rdap_res = _lookup_rdap_fallback(domain, timeout=timeout)
         if rdap_res:
-            print_warning("WHOIS port 43 timed out/firewalled; recovered registration records via RDAP (HTTPS 443).")
+            print_warning(
+                "WHOIS port 43 timed out/firewalled; recovered registration records via RDAP (HTTPS 443)."
+            )
             return rdap_res
         return WhoisResult(
             domain=domain,
@@ -418,7 +430,9 @@ def lookup_whois(domain: str, timeout: int = 10) -> WhoisResult:
         # Socket error connecting to port 43; attempt RDAP over HTTPS port 443
         rdap_res = _lookup_rdap_fallback(domain, timeout=timeout)
         if rdap_res:
-            print_warning("WHOIS port 43 socket connection blocked; recovered registration records via RDAP (HTTPS 443).")
+            print_warning(
+                "WHOIS port 43 socket connection blocked; recovered registration records via RDAP (HTTPS 443)."
+            )
             return rdap_res
         return WhoisResult(
             domain=domain,
@@ -429,7 +443,9 @@ def lookup_whois(domain: str, timeout: int = 10) -> WhoisResult:
     except Exception as err:
         rdap_res = _lookup_rdap_fallback(domain, timeout=timeout)
         if rdap_res:
-            print_warning("WHOIS query encountered an unexpected error; recovered registration records via RDAP.")
+            print_warning(
+                "WHOIS query encountered an unexpected error; recovered registration records via RDAP."
+            )
             return rdap_res
         return WhoisResult(
             domain=domain,

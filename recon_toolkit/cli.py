@@ -195,7 +195,9 @@ def run_cli(argv: Optional[List[str]] = None) -> int:
     if run_probe_flag and not (run_whois_flag or run_dns_flag or run_sub_flag):
         run_sub_flag = True
 
-    custom_resolvers = [ns.strip() for ns in args.nameservers.split(",")] if args.nameservers else None
+    custom_resolvers = (
+        [ns.strip() for ns in args.nameservers.split(",")] if args.nameservers else None
+    )
 
     # Results aggregation dictionary for structured reporting / export
     full_report: Dict[str, Any] = {
@@ -264,7 +266,9 @@ def run_cli(argv: Optional[List[str]] = None) -> int:
         # Phase 4: HTTP/HTTPS Service Probing & Subdomain Takeover Detection (httpx)
         if run_probe_flag:
             if not args.json:
-                print_section(f"Phase 4: HTTP/HTTPS Service Probing & Takeover Detection ({domain})")
+                print_section(
+                    f"Phase 4: HTTP/HTTPS Service Probing & Takeover Detection ({domain})"
+                )
             print_info(
                 f"Probing {len(discovered_hosts)} host(s) on ports 80 & 443 "
                 f"(AsyncIO httpx, concurrency={args.threads}, timeout={args.timeout}s)..."
@@ -292,10 +296,13 @@ def run_cli(argv: Optional[List[str]] = None) -> int:
 
         if args.json:
             import json
+
             print(json.dumps(full_report, indent=2))
 
         if not args.json:
-            print(f"\n{Colors.GREEN}{Colors.BOLD}[*] Reconnaissance complete for '{domain}'.{Colors.RESET}\n")
+            print(
+                f"\n{Colors.GREEN}{Colors.BOLD}[*] Reconnaissance complete for '{domain}'.{Colors.RESET}\n"
+            )
 
         return 0
 

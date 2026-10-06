@@ -54,7 +54,9 @@ class TestSubdomainEnum(unittest.TestCase):
     def test_detect_wildcard_dns_negative(self):
         async def run_test():
             mock_resolver = MagicMock()
-            with patch("recon_toolkit.subdomain_enum.async_query_a_record", new_callable=AsyncMock) as mock_query:
+            with patch(
+                "recon_toolkit.subdomain_enum.async_query_a_record", new_callable=AsyncMock
+            ) as mock_query:
                 # Queries return empty lists (non-existent domain)
                 mock_query.return_value = []
                 is_wildcard, ips = await async_detect_wildcard_dns("example.com", mock_resolver)
@@ -66,10 +68,14 @@ class TestSubdomainEnum(unittest.TestCase):
     def test_detect_wildcard_dns_positive(self):
         async def run_test():
             mock_resolver = MagicMock()
-            with patch("recon_toolkit.subdomain_enum.async_query_a_record", new_callable=AsyncMock) as mock_query:
+            with patch(
+                "recon_toolkit.subdomain_enum.async_query_a_record", new_callable=AsyncMock
+            ) as mock_query:
                 # Queries return wildcard IP
                 mock_query.return_value = ["203.0.113.50"]
-                is_wildcard, ips = await async_detect_wildcard_dns("wildcard-domain.com", mock_resolver)
+                is_wildcard, ips = await async_detect_wildcard_dns(
+                    "wildcard-domain.com", mock_resolver
+                )
                 self.assertTrue(is_wildcard)
                 self.assertIn("203.0.113.50", ips)
 
@@ -81,7 +87,9 @@ class TestSubdomainEnum(unittest.TestCase):
             semaphore = asyncio.Semaphore(10)
             wildcard_ips = {"203.0.113.50"}
 
-            with patch("recon_toolkit.subdomain_enum.async_query_a_record", new_callable=AsyncMock) as mock_query:
+            with patch(
+                "recon_toolkit.subdomain_enum.async_query_a_record", new_callable=AsyncMock
+            ) as mock_query:
                 # 1. Candidate resolves to wildcard IP -> should be filtered out (return None)
                 mock_query.return_value = ["203.0.113.50"]
                 res = await async_resolve_candidate(

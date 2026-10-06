@@ -191,7 +191,9 @@ class HttpProberResult:
             return
 
         # Print header
-        print(f"\n  {Colors.BOLD}{'STATUS':<8} {'URL':<38} {'TITLE / ERROR':<32} {'TAKEOVER RISK'}{Colors.RESET}")
+        print(
+            f"\n  {Colors.BOLD}{'STATUS':<8} {'URL':<38} {'TITLE / ERROR':<32} {'TAKEOVER RISK'}{Colors.RESET}"
+        )
         print(f"  {'-' * 8} {'-' * 38} {'-' * 32} {'-' * 15}")
 
         for rec in self.probes:
@@ -406,9 +408,13 @@ async def probe_subdomains_async(
     ) as client:
         for sub in unique_subs:
             # Probe Port 80 (HTTP)
-            tasks.append(probe_single_endpoint(client, sub, port=80, scheme="http", semaphore=semaphore))
+            tasks.append(
+                probe_single_endpoint(client, sub, port=80, scheme="http", semaphore=semaphore)
+            )
             # Probe Port 443 (HTTPS)
-            tasks.append(probe_single_endpoint(client, sub, port=443, scheme="https", semaphore=semaphore))
+            tasks.append(
+                probe_single_endpoint(client, sub, port=443, scheme="https", semaphore=semaphore)
+            )
 
         probe_outputs = await asyncio.gather(*tasks, return_exceptions=True)
 

@@ -155,7 +155,9 @@ def query_dns_records(
     result = DnsResult(domain=domain)
     resolver = get_configured_resolver(timeout=timeout, nameservers=custom_nameservers)
 
-    print_info(f"Querying DNS records for '{Colors.BOLD}{domain}{Colors.RESET}' ({', '.join(types_to_query)})...")
+    print_info(
+        f"Querying DNS records for '{Colors.BOLD}{domain}{Colors.RESET}' ({', '.join(types_to_query)})..."
+    )
 
     for rtype in types_to_query:
         result.records[rtype] = []
@@ -171,13 +173,17 @@ def query_dns_records(
                 if rtype == "A":
                     # IPv4 address string (e.g. '93.184.216.34')
                     val = str(rdata.address)
-                    record_entry = DnsRecordEntry(record_type=rtype, value=val, ttl=answers.rrset.ttl)
+                    record_entry = DnsRecordEntry(
+                        record_type=rtype, value=val, ttl=answers.rrset.ttl
+                    )
                     result.records[rtype].append(f"{val} (TTL: {answers.rrset.ttl}s)")
 
                 elif rtype == "AAAA":
                     # IPv6 address string (e.g. '2606:2800:220:1:248:1893:25c8:1946')
                     val = str(rdata.address)
-                    record_entry = DnsRecordEntry(record_type=rtype, value=val, ttl=answers.rrset.ttl)
+                    record_entry = DnsRecordEntry(
+                        record_type=rtype, value=val, ttl=answers.rrset.ttl
+                    )
                     result.records[rtype].append(f"{val} (TTL: {answers.rrset.ttl}s)")
 
                 elif rtype == "MX":
@@ -197,19 +203,25 @@ def query_dns_records(
                     # Join string parts decoding UTF-8 or ASCII
                     txt_strings = [part.decode("utf-8", errors="replace") for part in rdata.strings]
                     joined_txt = " ".join(txt_strings)
-                    record_entry = DnsRecordEntry(record_type=rtype, value=joined_txt, ttl=answers.rrset.ttl)
+                    record_entry = DnsRecordEntry(
+                        record_type=rtype, value=joined_txt, ttl=answers.rrset.ttl
+                    )
                     result.records[rtype].append(joined_txt)
 
                 elif rtype == "NS":
                     # Authoritative Nameserver target
                     ns_target = str(rdata.target).rstrip(".")
-                    record_entry = DnsRecordEntry(record_type=rtype, value=ns_target, ttl=answers.rrset.ttl)
+                    record_entry = DnsRecordEntry(
+                        record_type=rtype, value=ns_target, ttl=answers.rrset.ttl
+                    )
                     result.records[rtype].append(ns_target)
 
                 elif rtype == "CNAME":
                     # Canonical Name alias target
                     cname_target = str(rdata.target).rstrip(".")
-                    record_entry = DnsRecordEntry(record_type=rtype, value=cname_target, ttl=answers.rrset.ttl)
+                    record_entry = DnsRecordEntry(
+                        record_type=rtype, value=cname_target, ttl=answers.rrset.ttl
+                    )
                     result.records[rtype].append(cname_target)
 
                 elif rtype == "SOA":
@@ -221,13 +233,17 @@ def query_dns_records(
                         f"Serial: {rdata.serial}, Refresh: {rdata.refresh}s, "
                         f"Retry: {rdata.retry}s, Expire: {rdata.expire}s"
                     )
-                    record_entry = DnsRecordEntry(record_type=rtype, value=soa_info, ttl=answers.rrset.ttl)
+                    record_entry = DnsRecordEntry(
+                        record_type=rtype, value=soa_info, ttl=answers.rrset.ttl
+                    )
                     result.records[rtype].append(soa_info)
 
                 else:
                     # Fallback generic string representation
                     val = str(rdata)
-                    record_entry = DnsRecordEntry(record_type=rtype, value=val, ttl=answers.rrset.ttl)
+                    record_entry = DnsRecordEntry(
+                        record_type=rtype, value=val, ttl=answers.rrset.ttl
+                    )
                     result.records[rtype].append(val)
 
                 if record_entry:

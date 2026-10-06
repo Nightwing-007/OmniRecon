@@ -23,7 +23,9 @@ class TestHttpProber(unittest.TestCase):
         html_simple = "<html><head><title>Dashboard Login</title></head><body></body></html>"
         self.assertEqual(extract_html_title(html_simple), "Dashboard Login")
 
-        html_multiline = "<html><head><title>\n  Internal Portal  \n &amp; Admin \n</title></head></html>"
+        html_multiline = (
+            "<html><head><title>\n  Internal Portal  \n &amp; Admin \n</title></head></html>"
+        )
         self.assertEqual(extract_html_title(html_multiline), "Internal Portal & Admin")
 
         html_no_title = "<html><head></head><body><h1>Hello</h1></body></html>"
@@ -50,7 +52,9 @@ class TestHttpProber(unittest.TestCase):
         self.assertIn("Heroku", service)
 
     def test_check_subdomain_takeover_benign(self):
-        benign_body = "<html><head><title>Welcome</title></head><body>All systems operational</body></html>"
+        benign_body = (
+            "<html><head><title>Welcome</title></head><body>All systems operational</body></html>"
+        )
         is_vuln, service = check_subdomain_takeover(benign_body)
         self.assertFalse(is_vuln)
         self.assertIsNone(service)
